@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Shield — Web</title>
+<link rel="stylesheet" href="app.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234F46E5' d='M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z'/%3E%3C/svg%3E" />
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="logo">🛡️</span>
+    <div>
+      <h1>AI Shield <span class="webtag">Web</span></h1>
+      <p class="sub">Real-time AI content detection — the same engine as the Android app, running in your browser. Nothing is uploaded.</p>
+    </div>
+  </div>
+  <nav>
+    <a class="navlink active" data-tab="analyze" href="#analyze">Analyze an image</a>
+    <a class="navlink" data-tab="live" href="#live">Live screen scan</a>
+    <a class="navlink" data-server-only href="/dashboard">Dashboard →</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ============================ ANALYZE TAB ============================ -->
+  <section id="tab-analyze" class="tab active">
+    <div class="grid2">
+      <div class="card dropzone" id="dropzone" tabindex="0">
+        <div class="dz-inner">
+          <div class="dz-icon">🖼️</div>
+          <h2>Drop an image here</h2>
+          <p>or paste (Ctrl+V), or</p>
+          <label class="btn primary" for="fileInput">Choose a file</label>
+          <input type="file" id="fileInput" accept="image/*" hidden />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Or try a sample</h2>
+        <div class="samples">
+          <figure data-src="samples/sample-ai.jpg">
+            <img src="samples/sample-ai.jpg" alt="AI-style sample" />
+            <figcaption>Synthetic-style render</figcaption>
+          </figure>
+          <figure data-src="samples/sample-photo.jpg">
+            <img src="samples/sample-photo.jpg" alt="Photo-style sample" />
+            <figcaption>Photograph-style</figcaption>
+          </figure>
+        </div>
+        <p class="hint">Analysis runs fully in your browser using the same on-device detector as the Android app (noise, spectrum, compression &amp; color statistics).</p>
+      </div>
+    </div>
+
+    <div class="card preview-card" id="previewCard" hidden>
+      <div class="grid2">
+        <div>
+          <img id="previewImg" alt="Analyzed image" />
+        </div>
+        <div id="resultBox" class="result">
+          <div class="skeleton">Analyzing…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LIVE TAB ============================ -->
+  <section id="tab-live" class="tab">
+    <div class="card">
+      <div class="live-head">
+        <div>
+          <h2>Live screen scan <span class="pill">demo of the phone experience</span></h2>
+          <p class="sub">Share a window or tab (your social feeds work great). AI Shield monitors silently — <b>no scanning indicator</b> — and only shows the warning chip when confidence crosses the server-configured threshold.</p>
+        </div>
+        <div class="live-controls">
+          <button id="btnStartLive" class="btn primary">▶ Start live scan</button>
+          <button id="btnStopLive" class="btn danger" hidden>■ Stop</button>
+        </div>
+      </div>
+
+      <div class="video-wrap" id="videoWrap">
+        <video id="liveVideo" autoplay muted playsinline></video>
+        <div id="chip" class="chip" hidden>
+          <span class="chip-warn">⚠</span>
+          <span id="chipText">Likely AI · 0%</span>
+          <button id="chipClose" title="Dismiss">✕</button>
+        </div>
+        <div id="liveIdle" class="live-idle">
+          <div class="dz-icon">📺</div>
+          <p>Your screen preview appears here.<br/>Pick a tab with a social feed, scroll around, and watch the chip appear on AI-looking content.</p>
+        </div>
+      </div>
+
+      <div class="live-stats" id="liveStats" hidden>
+        <span><b id="statAnalyzed">0</b> analyzed</span>
+        <span><b id="statAlerts">0</b> alerts</span>
+        <span><b id="statSilent">0</b> recorded silently</span>
+        <span class="muted" id="liveCfg"></span>
+        <label class="toggle" data-server-only><input type="checkbox" id="shareLogs" checked /> share anonymous results with dashboard</label>
+      </div>
+      <p id="standaloneNote" class="hint" hidden>Standalone demo mode — no backend connected, built-in default thresholds are used and results stay in this browser. Deploy the backend (see docs/DEPLOY.md) to enable the dashboard and shared thresholds.</p>
+      <p class="hint">Requires Chrome/Edge and this page served over HTTPS (or localhost). Audio analysis is Android-only for now; web uses the visual engine.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ DETAIL MODAL ============================ -->
+<div id="modal" class="modal" hidden>
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>AI Analysis</h2>
+    <div class="detail-top">
+      <div class="score-big" id="mOverall">0%</div>
+      <div>
+        <div class="verdict" id="mVerdict">—</div>
+        <div class="muted" id="mSource"></div>
+        <div class="muted" id="mTime"></div>
+      </div>
+    </div>
+    <div class="bars">
+      <div class="bar-row">
+        <label>Visual content</label>
+        <div class="bar"><i id="barVisual" style="width:0%"></i></div>
+        <b id="pctVisual">0%</b>
+      </div>
+      <div class="bar-row">
+        <label>Content Credentials</label>
+        <span class="muted">Not detected <span class="info" title="C2PA credentials live in the original file's metadata; a screen capture contains only pixels.">ⓘ</span></span>
+      </div>
+    </div>
+    <p class="explain">Scores come from the on-device visual engine (sensor-noise residual, 1/f² spectrum slope, JPEG blockiness, saturation statistics) fused exactly like the mobile app. No detector is perfect — treat it as a signal, not proof.</p>
+    <details id="mFeatures"><summary>Feature details</summary><pre id="mFeatureJson"></pre></details>
+  </div>
+</div>
+
+<footer>
+  <span data-server-only>AI Shield — thresholds served live by the backend · <a href="/config" target="_blank">/config</a> · <a href="/dashboard">Dashboard</a></span>
+  <span data-standalone-only hidden>AI Shield — standalone demo build. Analysis runs 100% in your browser.</span>
+</footer>
+
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
