@@ -7,18 +7,29 @@
   const $ = id => document.getElementById(id);
   let CFG = { alertThreshold: 0.90, logThreshold: 0.70, sampleIntervalMs: 2500, overlayAutoDismissMs: 8000, dedupHamming: 10, changeThreshold: 0.035 };
   let SERVER_ONLINE = true;
-  fetch('/config').then(r => { if (!r.ok) throw new Error('config unavailable'); return r.json(); })
-    .then(c => { CFG = { ...CFG, ...c }; updateLiveCfg(); })
-    .catch(() => {
-      // Static hosting (e.g. CDN demo): run fully client-side with defaults.
-      SERVER_ONLINE = false;
-      document.querySelectorAll('[data-server-only]').forEach(el => { el.hidden = true; });
-      const s = $('shareLogs');
-      if (s) { s.checked = false; s.disabled = true; }
-      const note = $('standaloneNote');
-      if (note) note.hidden = false;
-      document.querySelectorAll('[data-standalone-only]').forEach(el => { el.hidden = false; });
-    });
+  if (window.AISHEIELD_STANDALONE) {
+    // Single-file build: no backend, defaults baked in.
+    SERVER_ONLINE = false;
+    document.querySelectorAll('[data-server-only]').forEach(el => { el.hidden = true; });
+    const s = $('shareLogs');
+    if (s) { s.checked = false; s.disabled = true; }
+    const note = $('standaloneNote');
+    if (note) note.hidden = false;
+    document.querySelectorAll('[data-standalone-only]').forEach(el => { el.hidden = false; });
+  } else {
+    fetch('/config').then(r => { if (!r.ok) throw new Error('config unavailable'); return r.json(); })
+      .then(c => { CFG = { ...CFG, ...c }; updateLiveCfg(); })
+      .catch(() => {
+        // Static hosting (e.g. CDN demo): run fully client-side with defaults.
+        SERVER_ONLINE = false;
+        document.querySelectorAll('[data-server-only]').forEach(el => { el.hidden = true; });
+        const s = $('shareLogs');
+        if (s) { s.checked = false; s.disabled = true; }
+        const note = $('standaloneNote');
+        if (note) note.hidden = false;
+        document.querySelectorAll('[data-standalone-only]').forEach(el => { el.hidden = false; });
+      });
+  }
   function updateLiveCfg() {
     const el = document.getElementById('liveCfg');
     if (el) el.textContent = `alert ≥ ${Math.round(CFG.alertThreshold * 100)}% · silent log ≥ ${Math.round(CFG.logThreshold * 100)}% · sample every ${CFG.sampleIntervalMs / 1000}s`;
