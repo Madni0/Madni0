@@ -19,7 +19,7 @@
   <nav>
     <a class="navlink active" data-tab="analyze" href="#analyze">Analyze an image</a>
     <a class="navlink" data-tab="live" href="#live">Live screen scan</a>
-    <a class="navlink" href="/dashboard">Dashboard →</a>
+    <a class="navlink" data-server-only href="/dashboard">Dashboard →</a>
   </nav>
 </header>
 
@@ -97,8 +97,9 @@
         <span><b id="statAlerts">0</b> alerts</span>
         <span><b id="statSilent">0</b> recorded silently</span>
         <span class="muted" id="liveCfg"></span>
-        <label class="toggle"><input type="checkbox" id="shareLogs" checked /> share anonymous results with dashboard</label>
+        <label class="toggle" data-server-only><input type="checkbox" id="shareLogs" checked /> share anonymous results with dashboard</label>
       </div>
+      <p id="standaloneNote" class="hint" hidden>Standalone demo mode — no backend connected, built-in default thresholds are used and results stay in this browser. Deploy the backend (see docs/DEPLOY.md) to enable the dashboard and shared thresholds.</p>
       <p class="hint">Requires Chrome/Edge and this page served over HTTPS (or localhost). Audio analysis is Android-only for now; web uses the visual engine.</p>
     </div>
   </section>
@@ -134,7 +135,8 @@
 </div>
 
 <footer>
-  <span>AI Shield — thresholds served live by the backend · <a href="/config" target="_blank">/config</a> · <a href="/dashboard">Dashboard</a></span>
+  <span data-server-only>AI Shield — thresholds served live by the backend · <a href="/config" target="_blank">/config</a> · <a href="/dashboard">Dashboard</a></span>
+  <span data-standalone-only hidden>AI Shield — standalone demo build. Analysis runs 100% in your browser.</span>
 </footer>
 
 <script src="engine.js"></script>
