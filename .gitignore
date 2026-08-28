@@ -1,0 +1,14 @@
+*.iml
+.gradle/
+.idea/
+.kotlin/
+local.properties
+.DS_Store
+build/
+captures/
+.externalNativeBuild
+.cxx
+
+# Backend
+backend/node_modules/
+backend/data/*.json

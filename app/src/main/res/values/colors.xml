@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_primary">#4F46E5</color>
+    <color name="purple_dark">#3730A3</color>
+    <color name="bg">#F6F7FB</color>
+    <color name="card">#FFFFFF</color>
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="score_alert">#DC2626</color>
+    <color name="score_warn">#D97706</color>
+    <color name="score_ok">#059669</color>
+    <color name="amber">#F59E0B</color>
+    <color name="chip_bg">#F0141414</color>
+    <color name="chip_stroke">#66F59E0B</color>
+    <color name="ic_launcher_background">#4F46E5</color>
+</resources>

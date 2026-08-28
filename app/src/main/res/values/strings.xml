@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI Shield</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">AI Shield</string>
+    <string name="onboarding_subtitle">Real-time detection of AI-generated content while you browse social media. No screenshots. No uploads. Silent protection.</string>
+    <string name="onboarding_bullets">•  Works with Instagram, TikTok, Facebook, X, Reddit, YouTube and more\n•  Detects AI images, deepfakes and synthetic audio\n•  Only interrupts you when confidence is high (e.g. "Likely AI - 94%")\n•  Thresholds tuned remotely - no app updates needed\n•  Analysis runs on your device</string>
+    <string name="onboarding_button">Get Started</string>
+
+    <!-- Auth -->
+    <string name="btn_guest">Continue as Guest</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_sign_up">Create Account</string>
+    <string name="auth_invalid">Enter a valid email and a password of 6+ characters.</string>
+    <string name="auth_working">Signing in…</string>
+    <string name="auth_failed">Sign-in failed - check the backend connection, or continue as guest.</string>
+
+    <!-- Main -->
+    <string name="protection_card_title">AI Protection</string>
+    <string name="protection_on">Protection is ON</string>
+    <string name="protection_off">Protection is OFF</string>
+    <string name="protection_hint_on">Monitoring silently - you will only be alerted when content is likely AI-generated.</string>
+    <string name="protection_hint_off">Turn on, allow screen capture once, and keep scrolling as usual.</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permission_overlay">Draw AI warnings over other apps</string>
+    <string name="permission_notif">Notifications (fallback alerts)</string>
+    <string name="permission_usage">App detection (show which app was scanned)</string>
+    <string name="status_granted">Granted</string>
+    <string name="status_not_granted">Not granted</string>
+    <string name="status_optional_not_granted">Not granted (optional)</string>
+    <string name="grant">Grant</string>
+    <string name="today_title">Today</string>
+    <string name="stat_scanned">Content analyzed</string>
+    <string name="stat_alerted">AI warnings</string>
+    <string name="recent_title">Recent alerts</string>
+    <string name="empty_recent">No alerts yet - your feeds look clean. Detection runs silently in the background.</string>
+    <string name="btn_history">History</string>
+    <string name="btn_settings">Settings</string>
+    <string name="guest_session">Guest session</string>
+    <string name="signed_in_as">Signed in as %1$s</string>
+    <string name="not_signed_in">Not signed in</string>
+    <string name="backend_caption">Thresholds served by: %1$s</string>
+    <string name="toast_consent_needed">Screen-capture permission is required to protect your session.</string>
+
+    <!-- Overlay chip -->
+    <string name="chip_text">Likely AI · %1$d%%</string>
+    <string name="chip_close">Dismiss</string>
+
+    <!-- Detail -->
+    <string name="detail_title">AI Analysis</string>
+    <string name="label_visual">Visual content</string>
+    <string name="label_deepfake">Deepfake indicators</string>
+    <string name="label_audio">Synthetic audio</string>
+    <string name="label_c2pa">Content Credentials</string>
+    <string name="c2pa_not_detected">Not detected</string>
+    <string name="detected_in">Detected in %1$s</string>
+    <string name="detail_explanation">This content scored above your alert threshold. Scores combine on-device visual analysis, deepfake indicators and synthetic-audio analysis. No detector is perfect - treat it as a signal, not proof.</string>
+    <string name="c2pa_note">Content Credentials (C2PA) live in the original file\'s metadata and cannot be verified from a screen capture, so they are reported as "Not detected" during live scanning.</string>
+    <string name="btn_got_it">Got it</string>
+    <string name="percent">%1$d%%</string>
+
+    <!-- Verdicts -->
+    <string name="verdict_likely_ai">Likely AI Generated</string>
+    <string name="verdict_possibly_ai">Possibly AI Generated</string>
+    <string name="verdict_authentic">Appears Authentic</string>
+
+    <!-- History -->
+    <string name="title_history">History</string>
+    <string name="empty_history">Nothing analyzed yet. Enable AI Protection and browse normally.</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Settings</string>
+    <string name="thresholds_label">Server-controlled thresholds</string>
+    <string name="thresholds_summary">Alert at ≥ %1$d%% · Log silently at ≥ %2$d%% · Sample every %3$s s\nThese values are managed from your backend and apply to all users.</string>
+    <string name="btn_refresh_config">Refresh from backend</string>
+    <string name="backend_url_label">Backend URL</string>
+    <string name="session_label">Auto-stop protection after (minutes, 0 = until stopped)</string>
+    <string name="overlay_pos_label">Warning position</string>
+    <string name="overlay_top">Top of screen</string>
+    <string name="overlay_bottom">Bottom of screen</string>
+    <string name="audio_label">Analyze audio for synthetic voice</string>
+    <string name="config_refresh_ok">Configuration updated from backend</string>
+    <string name="config_refresh_fail">Could not reach backend - using cached values</string>
+    <string name="saved">Saved</string>
+    <string name="btn_save">Save</string>
+
+    <!-- Service -->
+    <string name="channel_protection">AI Protection status</string>
+    <string name="channel_alerts">AI warnings</string>
+    <string name="notif_active_title">AI Protection active</string>
+    <string name="notif_active_text">Scanning silently. You will only be alerted when content is likely AI-generated.</string>
+    <string name="notif_action_stop">Stop</string>
+</resources>

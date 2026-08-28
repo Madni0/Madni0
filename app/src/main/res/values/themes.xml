@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AIShield" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/purple_primary</item>
+        <item name="colorOnPrimary">@color/card</item>
+        <item name="colorPrimaryContainer">@color/purple_dark</item>
+        <item name="colorOnPrimaryContainer">@color/card</item>
+        <item name="colorSecondary">@color/amber</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="colorSurface">@color/card</item>
+        <item name="android:statusBarColor">@color/bg</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+    </style>
+</resources>
