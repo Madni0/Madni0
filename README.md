@@ -34,11 +34,23 @@ YouTube and any other app, during an authorized scanning session.
 | Path | What |
 |---|---|
 | `app/` | Android app (Kotlin, minSdk 26, targetSdk 34) |
-| `backend/` | Express config/logging backend + admin UI (Dockerfile) |
+| `backend/` | Express config/logging backend + **AI Shield Web** + dashboard (Dockerfile) |
+| `backend/public/` | Web app: same detection engine ported to JS (`engine.js`), image analyzer + **live screen-scan demo**, samples |
 | `docs/ARCHITECTURE.md` | Full pipeline design & model roadmap |
-| `docs/SETUP_AND_BUILD.md` | Build/run/test instructions |
+| `docs/SETUP_AND_BUILD.md` | Build/run/test instructions (Android + web) |
 | `docs/CLIENT_LIMITATIONS.md` | Honest platform/detection constraints & phases |
-| `.github/workflows/android.yml` | CI that builds a debug APK on push |
+| `docs/android-ci.yml` | GitHub Actions workflow (copy into `.github/workflows/` to activate) |
+
+## Web app (no install, demo-ready)
+
+Run the backend and open its URL — the web app is the same detector in the browser:
+
+- **Analyze an image** — drag & drop, paste (Ctrl+V), or pick a bundled sample; identical scoring UI to the phone (band colors, feature details). 100% client-side: images never leave the browser.
+- **Live screen scan** — share a tab/window; the page monitors silently with change detection + pHash dedup and only raises the same **"⚠ Likely AI · NN%"** chip when the server-configured threshold is crossed. A faithful desktop mirror of the Android experience.
+- **Dashboard** (`/dashboard`) — live stats, detection log fed by both apps, and threshold editing applied to every connected device.
+
+Quick start: `cd backend && npm install && npm start` → open `http://localhost:3000`.
+
 
 ## Quick start
 

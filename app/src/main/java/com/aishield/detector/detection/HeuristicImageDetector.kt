@@ -128,7 +128,9 @@ object HeuristicImageDetector : ImageDetector {
         val slopeZ = clamp((-2.55 - slope) / 0.35)        // steeper than 1/f^2 -> suspicious
         val blockZ = clamp((1.10 - blockiness) / 0.18)    // crisp (un-recompressed) -> suspicious
         val satZ = clamp((satMean - 0.38) / 0.14)         // high saturation -> mildly suspicious
-        val logit = -1.1 + 0.90 * cleanZ + 0.45 * slopeZ + 0.15 * blockZ + 0.15 * satZ
+        // Intercept calibrated on labeled smooth-render vs photographic samples;
+        // mirrored in backend/public/engine.js — keep both in sync.
+        val logit = 0.1 + 0.90 * cleanZ + 0.45 * slopeZ + 0.15 * blockZ + 0.15 * satZ
         return 1.0 / (1.0 + Math.exp(-logit))
     }
 

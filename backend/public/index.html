@@ -1,90 +1,143 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AI Shield - Config Admin</title>
-<style>
-  :root { color-scheme: dark; }
-  body { font-family: system-ui, sans-serif; background: #0f1117; color: #e5e7eb; margin: 0; padding: 32px; }
-  h1 { font-size: 22px; } .muted { color: #9ca3af; font-size: 13px; }
-  .card { background: #171a23; border: 1px solid #2a2f3d; border-radius: 14px; padding: 20px; max-width: 720px; margin-top: 20px; }
-  label { display: block; margin-top: 14px; font-size: 13px; color: #9ca3af; }
-  input { width: 100%; box-sizing: border-box; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid #2a2f3d; background: #0f1117; color: #e5e7eb; font-size: 14px; }
-  button { margin-top: 18px; padding: 10px 18px; border-radius: 8px; border: 0; background: #4f46e5; color: white; font-size: 14px; cursor: pointer; }
-  button:hover { background: #6366f1; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  pre { background: #0f1117; border: 1px solid #2a2f3d; padding: 12px; border-radius: 8px; overflow-x: auto; font-size: 12px; }
-  #msg { margin-top: 10px; font-size: 13px; color: #34d399; }
-  #msg.err { color: #f87171; }
-</style>
+<title>AI Shield — Web</title>
+<link rel="stylesheet" href="app.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234F46E5' d='M12 2L4 5v6c0 5.25 3.4 9.74 8 11 4.6-1.26 8-5.75 8-11V5l-8-3z'/%3E%3C/svg%3E" />
 </head>
 <body>
-<h1>🛡️ AI Shield — Config Admin</h1>
-<p class="muted">Edit thresholds here; every phone running the app picks them up within one session (or on refresh). Default admin key: <code>dev-admin-key</code></p>
+<header>
+  <div class="brand">
+    <span class="logo">🛡️</span>
+    <div>
+      <h1>AI Shield <span class="webtag">Web</span></h1>
+      <p class="sub">Real-time AI content detection — the same engine as the Android app, running in your browser. Nothing is uploaded.</p>
+    </div>
+  </div>
+  <nav>
+    <a class="navlink active" data-tab="analyze" href="#analyze">Analyze an image</a>
+    <a class="navlink" data-tab="live" href="#live">Live screen scan</a>
+    <a class="navlink" href="/dashboard">Dashboard →</a>
+  </nav>
+</header>
 
-<div class="card">
-  <div class="row">
-    <div><label>Alert threshold (show warning ≥)</label><input id="alertThreshold" type="number" step="0.01" min="0.5" max="1" /></div>
-    <div><label>Silent-log threshold (record internally ≥)</label><input id="logThreshold" type="number" step="0.01" min="0.1" max="1" /></div>
+<main>
+  <!-- ============================ ANALYZE TAB ============================ -->
+  <section id="tab-analyze" class="tab active">
+    <div class="grid2">
+      <div class="card dropzone" id="dropzone" tabindex="0">
+        <div class="dz-inner">
+          <div class="dz-icon">🖼️</div>
+          <h2>Drop an image here</h2>
+          <p>or paste (Ctrl+V), or</p>
+          <label class="btn primary" for="fileInput">Choose a file</label>
+          <input type="file" id="fileInput" accept="image/*" hidden />
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Or try a sample</h2>
+        <div class="samples">
+          <figure data-src="samples/sample-ai.jpg">
+            <img src="samples/sample-ai.jpg" alt="AI-style sample" />
+            <figcaption>Synthetic-style render</figcaption>
+          </figure>
+          <figure data-src="samples/sample-photo.jpg">
+            <img src="samples/sample-photo.jpg" alt="Photo-style sample" />
+            <figcaption>Photograph-style</figcaption>
+          </figure>
+        </div>
+        <p class="hint">Analysis runs fully in your browser using the same on-device detector as the Android app (noise, spectrum, compression &amp; color statistics).</p>
+      </div>
+    </div>
+
+    <div class="card preview-card" id="previewCard" hidden>
+      <div class="grid2">
+        <div>
+          <img id="previewImg" alt="Analyzed image" />
+        </div>
+        <div id="resultBox" class="result">
+          <div class="skeleton">Analyzing…</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LIVE TAB ============================ -->
+  <section id="tab-live" class="tab">
+    <div class="card">
+      <div class="live-head">
+        <div>
+          <h2>Live screen scan <span class="pill">demo of the phone experience</span></h2>
+          <p class="sub">Share a window or tab (your social feeds work great). AI Shield monitors silently — <b>no scanning indicator</b> — and only shows the warning chip when confidence crosses the server-configured threshold.</p>
+        </div>
+        <div class="live-controls">
+          <button id="btnStartLive" class="btn primary">▶ Start live scan</button>
+          <button id="btnStopLive" class="btn danger" hidden>■ Stop</button>
+        </div>
+      </div>
+
+      <div class="video-wrap" id="videoWrap">
+        <video id="liveVideo" autoplay muted playsinline></video>
+        <div id="chip" class="chip" hidden>
+          <span class="chip-warn">⚠</span>
+          <span id="chipText">Likely AI · 0%</span>
+          <button id="chipClose" title="Dismiss">✕</button>
+        </div>
+        <div id="liveIdle" class="live-idle">
+          <div class="dz-icon">📺</div>
+          <p>Your screen preview appears here.<br/>Pick a tab with a social feed, scroll around, and watch the chip appear on AI-looking content.</p>
+        </div>
+      </div>
+
+      <div class="live-stats" id="liveStats" hidden>
+        <span><b id="statAnalyzed">0</b> analyzed</span>
+        <span><b id="statAlerts">0</b> alerts</span>
+        <span><b id="statSilent">0</b> recorded silently</span>
+        <span class="muted" id="liveCfg"></span>
+        <label class="toggle"><input type="checkbox" id="shareLogs" checked /> share anonymous results with dashboard</label>
+      </div>
+      <p class="hint">Requires Chrome/Edge and this page served over HTTPS (or localhost). Audio analysis is Android-only for now; web uses the visual engine.</p>
+    </div>
+  </section>
+</main>
+
+<!-- ============================ DETAIL MODAL ============================ -->
+<div id="modal" class="modal" hidden>
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose">✕</button>
+    <h2>AI Analysis</h2>
+    <div class="detail-top">
+      <div class="score-big" id="mOverall">0%</div>
+      <div>
+        <div class="verdict" id="mVerdict">—</div>
+        <div class="muted" id="mSource"></div>
+        <div class="muted" id="mTime"></div>
+      </div>
+    </div>
+    <div class="bars">
+      <div class="bar-row">
+        <label>Visual content</label>
+        <div class="bar"><i id="barVisual" style="width:0%"></i></div>
+        <b id="pctVisual">0%</b>
+      </div>
+      <div class="bar-row">
+        <label>Content Credentials</label>
+        <span class="muted">Not detected <span class="info" title="C2PA credentials live in the original file's metadata; a screen capture contains only pixels.">ⓘ</span></span>
+      </div>
+    </div>
+    <p class="explain">Scores come from the on-device visual engine (sensor-noise residual, 1/f² spectrum slope, JPEG blockiness, saturation statistics) fused exactly like the mobile app. No detector is perfect — treat it as a signal, not proof.</p>
+    <details id="mFeatures"><summary>Feature details</summary><pre id="mFeatureJson"></pre></details>
   </div>
-  <div class="row">
-    <div><label>Sample interval (ms between analyses)</label><input id="sampleIntervalMs" type="number" step="100" min="300" max="60000" /></div>
-    <div><label>Overlay auto-dismiss (ms)</label><input id="overlayAutoDismissMs" type="number" step="500" min="1500" max="60000" /></div>
-  </div>
-  <div class="row">
-    <div><label>Overlay position</label><input id="overlayPosition" placeholder="top | bottom" /></div>
-    <div><label>Session auto-stop (minutes, 0 = off)</label><input id="sessionTimeoutMin" type="number" min="0" max="720" /></div>
-  </div>
-  <button onclick="save()">Save config</button>
-  <div id="msg"></div>
 </div>
 
-<div class="card">
-  <h3 style="margin:0 0 10px 0; font-size:15px;">Current server config (GET /config)</h3>
-  <pre id="current">loading…</pre>
-</div>
+<footer>
+  <span>AI Shield — thresholds served live by the backend · <a href="/config" target="_blank">/config</a> · <a href="/dashboard">Dashboard</a></span>
+</footer>
 
-<div class="card">
-  <h3 style="margin:0 0 10px 0; font-size:15px;">Admin key</h3>
-  <input id="adminKey" value="dev-admin-key" />
-</div>
-
-<script>
-async function load() {
-  const res = await fetch('/config');
-  const cfg = await res.json();
-  document.getElementById('current').textContent = JSON.stringify(cfg, null, 2);
-  for (const k of ['alertThreshold','logThreshold','sampleIntervalMs','overlayAutoDismissMs','sessionTimeoutMin']) {
-    if (document.getElementById(k)) document.getElementById(k).value = cfg[k];
-  }
-  if (document.getElementById('overlayPosition')) document.getElementById('overlayPosition').value = cfg.overlayPosition;
-}
-async function save() {
-  const body = {};
-  for (const k of ['alertThreshold','logThreshold','sampleIntervalMs','overlayAutoDismissMs','sessionTimeoutMin']) {
-    const v = document.getElementById(k).value;
-    if (v !== '') body[k] = Number(v);
-  }
-  const pos = document.getElementById('overlayPosition').value.trim();
-  if (pos) body.overlayPosition = pos;
-  const msg = document.getElementById('msg');
-  try {
-    const res = await fetch('/config', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'x-admin-key': document.getElementById('adminKey').value },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    msg.textContent = 'Saved ✓ — phones will pick this up automatically.';
-    msg.className = '';
-    load();
-  } catch (e) {
-    msg.textContent = 'Failed: ' + e.message;
-    msg.className = 'err';
-  }
-}
-load();
-</script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

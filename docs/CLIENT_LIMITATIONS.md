@@ -30,7 +30,11 @@ flagged in the proposal and are reflected in the implementation:
    trained TFLite model (supported already, zero code change) and tuning
    thresholds against real social-media screenshots. Expect iterative
    tuning of precision/recall, especially for AI *text* overlaid on images
-   (a separate OCR+classifier phase).
+   (a separate OCR+classifier phase). Known baseline blind spot: heavily
+   *textured* AI art can mimic photographic noise and evade the noise-based
+   signature — the strongest signal is the smooth/airbrushed render look
+   typical of AI-feed content. The same applies to the web engine, which is
+   an intentional 1:1 port of the Android baseline.
 7. **Synthetic audio** analysis works on Android 10+ and only for media
    that allows playback capture (non-DRM).
 
